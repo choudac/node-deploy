@@ -1,0 +1,24 @@
+apps:
+  - script: app.js
+    name: NodeDeployStatic
+    env:
+      COMMON_VARIABLE: true
+    env_production:
+      NODE_ENV: production
+deploy:
+  production:
+    user: imooc_manager
+    host:
+      - 47.107.166.91
+    port: '39999'
+    ref: origin/master
+    repo: git@github.com:choudac/nuxt-js-dome.git
+    # 服务器上项目部署的目录，会在/www/node-deploy-static下初始化一个production文件夹
+    # 配置文件会自动从git上面拉取静态网站代码到此路径
+    path: /www/node-deploy-static/production
+    
+    ssh_options: StrictHostKeyChecking=no
+    pre-deploy: git fetch --all
+    post-deploy: 'npm i && pm2 startOrRestart ecosystem.yaml --env production'
+    env:
+      NODE_ENV: production
